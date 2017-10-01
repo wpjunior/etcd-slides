@@ -1,0 +1,153 @@
+Configurações de aplicações distribuidas com etcd
+Tags: go, concorrencia, cloud config
+
+Wilson Júnior
+globo.com
+@wpjunior
+
+* Wilson Júnior
+
+- *Pythonista* desde muleque
+- Também é *Gopher*
+- Goiano root's
+- Apaixonado por tecnologia e como ela se apoia nas pessoas.
+- Biker
+- Desenvolvedor na Globo.com há 3 anos
+
+* Caracteristica de uma configuração
+
+- Descreve o comportamento
+- Infrequentemente alterada
+- Aplicações modificam seu comportamento
+
+* Imaginemos que possuimos uma aplicação escalada horizontamente 100 vezes em diferentes lugares
+
+
+* Como lidariamos com a consulta e escrita de configurações ?
+
+* Not better approach: variáveis de ambiente
+.image env-variables.png
+
+* Good to handle
+- Variáveis de ambientes são rápidas e não requerem nenhum I/O externo em tempo de consulta
+
+* Bad to handle
+- Cordenar 100 restarts para quando houver mudanças
+- a aplicação deve fazer *gracefull* *restart* não sacrificando nenhuma transação em andamento
+
+* Not better approach: consultar no banco de dados
+.image database-query.png
+
+* Good to handle
+- os dados sempre estarão frescos pois foram consultados no momento
+- não preocupar com um componente para manter
+
+* Bad to handle
+- criamos um gargalo.
+- too many: 304 not modified content.
+
+* Not better approuch: consultar no banco de dados + sistema de cache
+.image database-cache.png
+
+* Good to handle
+- o cache garantirá velocidade no acesso.
+
+* Bad to handle
+- Inconsistencia temporal
+- se a aplicação é crítica...
+
+
+* Better aprouch: escolha um banco de dados especializados em configurações e aplicações distribuidas
+.image database-config.png
+
+* O que é o etcd
+
+- Criado pela core os
+- Utilizado como storage do kubernetes
+- Key/value store
+- Persistente
+- Cluster Tolerante a falhas
+- Consistencia e via algoritmo Raft
+- MVCC Multiversion concurrency control
+
+* Protocolo debaixo dos panos
+
+- GRPC + HTTP (v3 da API)
+- Restful + JSON + HTTP (v2 da API)
+
+* Raft
+
+* Raft
+
+- Um algoritmo de *Consensus*
+- Conceito de *Log replicado*
+- Similar ao paxos
+- https://raft.github.io/
+- Necessidade de manter os dados consistentes e tolerante a falhas
+
+* Tamanho do cluster
+- TODO
+
+
+
+* Tradeoff: propagar x consultar
+
+* Somos treinados desde a academia em pensar no fluxo só de consultar.
+
+* Quando propagar é melhor
+
+* Quando propagar é melhor
+
+- os dados não são frequentemente alterados
+- os dados não possuem um grande volume
+
+Exemplos
+
+- Configurações de rede
+- Feature flags
+- Flags de negócio
+
+
+* blah
+
+
+- Propagar dados que mudam muito pode gerar um overhead
+- Consultar dados que quase não são
+
+
+
+
+
+* Brainstorm
+
+- Falar sobre os detalhes do ETCd
+- Falar que o Etcd usa GRPC + HTTP
+- Falar Sobre o Raft
+- Falar sobre o Coreos
+- Falar sobre a caracteristica de aplicações distribuidas
+- Falar sobre as limitações para lidar com dados massivos
+- Mostrar o aprouch de salvar em arquivos de configurações
+- Monstrar o efeito do Approuch de usar variáveis de ambientes
+  - Custo de restart
+  - Impacto em processos já em execução
+  - ...
+
+- Monstrar o efeito do approuch de ir cada vez no banco de dados buscar as configurações
+  - Gargalos
+  - A resposta basicamente é a mesma (304), same content
+  - Otimização
+
+- Mostrar o BAD approuch de cachear a resposta das configurações
+  - Tempo de reflexão
+  - O dado pode ficar inconsistente
+
+- Consistencia dos dados pelo raft
+- Propagar x Consultar os Dados
+- Citar algum exemplo do kubernetes
+- Mostrar a piramide de velocidade de acesso
+- Mostrar código em GO com GET, PUT usando o ETCD
+- Mostrar código em GO com o WATCH
+- https://www.slideshare.net/SreenivasMakam/coreos-overview-and-current-status?next_slideshow=1
+- Mostrar um exemplo real com GET, PUT e Watch
+- Citar o consul
+- Mostrar mais projetos relacionados
