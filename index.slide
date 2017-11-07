@@ -21,7 +21,7 @@ globo.com
 - Aplicações modificam seu comportamento
 
 * Imaginemos que possuimos uma aplicação escalada horizontamente 100 vezes em diferentes lugares
-
+* E cada dessas instancias recebem uma carga de transações muito alta
 
 * Como lidariamos com a consulta e escrita de configurações ?
 
@@ -56,7 +56,6 @@ globo.com
 - Inconsistencia temporal
 - se a aplicação é crítica...
 
-
 * Better aprouch: escolha um banco de dados especializados em configurações e aplicações distribuidas
 .image database-config.png
 
@@ -69,6 +68,8 @@ globo.com
 - Cluster Tolerante a falhas
 - Consistencia e via algoritmo Raft
 - MVCC Multiversion concurrency control
+- 15K stars on github
+- utilizado em outras empresas
 
 * Protocolo debaixo dos panos
 
@@ -88,7 +89,11 @@ globo.com
 * Tamanho do cluster
 .html cluster-size.html
 
+* Replicated log
 
+- Problema comum
+
+* Transações lineares
 
 * Tradeoff: propagar x consultar
 
@@ -101,53 +106,52 @@ globo.com
 - os dados não são frequentemente alterados
 - os dados não possuem um grande volume
 
-Exemplos
+* Exemplos
 
 - Configurações de rede
 - Feature flags
 - Flags de negócio
 
 
-* blah
+* Lets code
+* Simple GET
+
+.play simple-get.go
+
+* Simple PUT
+
+.play simple-put.go
+
+* Simple GET with prefix
+
+.play simple-get-prefix.go
+
+* Simple Watch
+
+.play simple-watch.go
+
+* Simple Watch + Prefix
+
+.play simple-watch-prefix.go
+
+* Simple GET + Watch
+
+.play simple-get-watch.go
+
+* Simple App
+
+.play simple-app.go
+
+* Outros projetos semelhantes
+
+- Consul
+- Serf
+- Zookeeper
 
 
 - Propagar dados que mudam muito pode gerar um overhead
 - Consultar dados que quase não são
 
+* Estamos contratando
 
-
-
-
-* Brainstorm
-
-- Falar sobre os detalhes do ETCd
-- Falar que o Etcd usa GRPC + HTTP
-- Falar Sobre o Raft
-- Falar sobre o Coreos
-- Falar sobre a caracteristica de aplicações distribuidas
-- Falar sobre as limitações para lidar com dados massivos
-- Mostrar o aprouch de salvar em arquivos de configurações
-- Monstrar o efeito do Approuch de usar variáveis de ambientes
-  - Custo de restart
-  - Impacto em processos já em execução
-  - ...
-
-- Monstrar o efeito do approuch de ir cada vez no banco de dados buscar as configurações
-  - Gargalos
-  - A resposta basicamente é a mesma (304), same content
-  - Otimização
-
-- Mostrar o BAD approuch de cachear a resposta das configurações
-  - Tempo de reflexão
-  - O dado pode ficar inconsistente
-
-- Consistencia dos dados pelo raft
-- Propagar x Consultar os Dados
-- Citar algum exemplo do kubernetes
-- Mostrar a piramide de velocidade de acesso
-- Mostrar código em GO com GET, PUT usando o ETCD
-- Mostrar código em GO com o WATCH
-- https://www.slideshare.net/SreenivasMakam/coreos-overview-and-current-status?next_slideshow=1
-- Mostrar um exemplo real com GET, PUT e Watch
-- Citar o consul
-- Mostrar mais projetos relacionados
+- talentos.globo.com
