@@ -91,7 +91,9 @@ globo.com
 
 * Replicated log
 
-- Problema comum
+* Exemplo
+
+.image replicated-log.png
 
 * Transações lineares
 
@@ -114,33 +116,50 @@ globo.com
 
 
 * Lets code
+
+* Conectando no cluster
+.code simple-get.go /clientv3.New/,/defer/ HLxxx
+
 * Simple GET
 
-.play simple-get.go
+.code simple-get.go /cli.Get/,/^}/ HLxxx
 
 * Simple PUT
 
-.play simple-put.go
+.code simple-put.go /cli.Put/,/^}/ HLxxx
 
 * Simple GET with prefix
 
-.play simple-get-prefix.go
+.code simple-get-prefix.go /cli.Get/,/^}/ HLxxx
 
 * Simple Watch
 
-.play simple-watch.go
+.code simple-watch.go /cli.Watch/,/^}/ HLxxx
 
 * Simple Watch + Prefix
 
-.play simple-watch-prefix.go
+.code simple-watch-prefix.go /cli.Watch/,/^}/ HLxxx
 
 * Simple GET + Watch
 
-.play simple-get-watch.go
+.code simple-get-watch.go /cli.Get/,/^}/ HLxxx
 
 * Simple App
 
-.play simple-app.go
+.code simple-app.go /var/,/^}/ HLxxx
+
+* Simple App
+.code simple-app.go /func loadConfig/,/defer/ HLxxx
+
+* Simple App
+.code simple-app.go /key/,/Store/ HLxxx
+
+* Simple App
+.code simple-app.go /cli.Watch/,/^}/ HLxxx
+
+* Simple App
+
+- Let's run and test
 
 * Outros projetos semelhantes
 
