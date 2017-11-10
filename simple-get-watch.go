@@ -4,23 +4,12 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"sync/atomic"
 	"time"
 
 	"github.com/coreos/etcd/clientv3"
 )
 
-var config atomic.Value
-
 func main() {
-	go func() {
-		for {
-			time.Sleep(time.Second)
-			value := config.Load()
-			fmt.Printf("In the memory the value is %q\n", value)
-		}
-	}()
-
 	cli, err := clientv3.New(clientv3.Config{
 		Endpoints:   []string{"localhost:2379"},
 		DialTimeout: 5 * time.Second,
@@ -39,12 +28,16 @@ func main() {
 		log.Fatal("my-key is not defined")
 	}
 
-	config.Store(resp.Kvs[0].Value)
+	fmt.Printf("Initial value: %q", resp.Kvs[0].Value)
 
-	watcher := cli.Watch(context.Background(), "my-key", clientv3.WithRev(resp.Header.Revision))
+	watcher := cli.Watch(
+		context.Background(),
+		"my-key",
+		clientv3.WithRev(resp.Header.Revision),
+	)
 	for resp := range watcher {
 		for _, ev := range resp.Events {
-			config.Store(ev.Kv.Value)
+			fmt.Printf("New value: %q", ev.Kv.Value)
 		}
 	}
 }

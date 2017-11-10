@@ -19,10 +19,20 @@ func main() {
 	}
 	defer cli.Close()
 
-	watcher := cli.Watch(context.Background(), "my", clientv3.WithPrefix())
+	watcher := cli.Watch(
+		context.Background(),
+		"my",
+		clientv3.WithPrefix(),
+	)
 	for resp := range watcher {
 		for _, ev := range resp.Events {
-			fmt.Printf("operation=%s key=%q value=%q mod_revision=%d\n", ev.Type, ev.Kv.Key, ev.Kv.Value, ev.Kv.ModRevision)
+			fmt.Printf(
+				"operation=%s key=%q value=%q mod_revision=%d\n",
+				ev.Type,
+				ev.Kv.Key,
+				ev.Kv.Value,
+				ev.Kv.ModRevision,
+			)
 		}
 	}
 }

@@ -2,19 +2,23 @@ Configurações de aplicações distribuidas com etcd
 Tags: go, concorrencia, cloud config
 
 Wilson Júnior
-globo.com
+Software enthusiast, Globo.com
+wilsonpjunior@gmail.com
+https://about.me/wpjunior
 @wpjunior
 
 * Wilson Júnior
+: Sempre demonstrar grato pelo convite
+: Agradecer a presença de todos
 
-- *Pythonista* desde muleque
+- *Pythonista* desde moleque (=
 - Também é *Gopher*
 - Goiano root's
-- Apaixonado por tecnologia e como ela se apoia nas pessoas.
+- Apaixonado por tecnologia e como ela se apoia nas pessoas
 - Biker
 - Desenvolvedor na Globo.com há 3 anos
 
-* Caracteristica de uma configuração
+* Caracteristicas de uma configuração
 
 - Descreve o comportamento
 - Infrequentemente alterada
@@ -46,7 +50,7 @@ globo.com
 - criamos um gargalo.
 - too many: 304 not modified content.
 
-* Not better approuch: consultar no banco de dados + sistema de cache
+* Not better approach: consultar no banco de dados + sistema de cache
 .image database-cache.png
 
 * Good to handle
@@ -56,7 +60,7 @@ globo.com
 - Inconsistencia temporal
 - se a aplicação é crítica...
 
-* Better aprouch: escolha um banco de dados especializados em configurações e aplicações distribuidas
+* Better approach: escolha um banco de dados especializados em configurações
 .image database-config.png
 
 * O que é o etcd
@@ -66,6 +70,8 @@ globo.com
 - Key/value store
 - Persistente
 - Cluster Tolerante a falhas
+
+* O que é o etcd
 - Consistencia e via algoritmo Raft
 - MVCC Multiversion concurrency control
 - 15K stars on github
@@ -114,6 +120,18 @@ globo.com
 - Feature flags
 - Flags de negócio
 
+* Quando consultar é melhor
+
+* Quando consultar é melhor
+
+- os dados são frequentemente alterados
+- os dados possuem um grande volume
+
+* Exemplos
+
+- Conteúdo estruturado
+- Dados de usuários
+
 
 * Lets code
 
@@ -130,7 +148,7 @@ globo.com
 
 * Simple GET with prefix
 
-.code simple-get-prefix.go /cli.Get/,/^}/ HLxxx
+.code simple-get-prefix.go /cli.Get/,/^}/ HLGet
 
 * Simple Watch
 
@@ -142,7 +160,10 @@ globo.com
 
 * Simple GET + Watch
 
-.code simple-get-watch.go /cli.Get/,/^}/ HLxxx
+.code simple-get-watch.go /cli.Get/,/Initial value/ HLxxx
+
+* Simple GET + Watch
+.code simple-get-watch.go /cli.Watch/,/^}/ HLxxx
 
 * Simple App
 
@@ -166,10 +187,6 @@ globo.com
 - Consul
 - Serf
 - Zookeeper
-
-
-- Propagar dados que mudam muito pode gerar um overhead
-- Consultar dados que quase não são
 
 * Estamos contratando
 

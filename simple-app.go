@@ -15,19 +15,24 @@ var (
 	discount atomic.Value
 )
 
+func handler(w http.ResponseWriter, r *http.Request) {
+	price := 50.0
+	fmt.Fprintf(w, "Temos o produto x\n")
+
+	switch discount.Load().(string) {
+	case "blackfriday":
+		price = price * 0.9
+	case "pre-blackfriday":
+		price = price * 1.3
+	}
+
+	fmt.Fprintf(w, "Preço %0.2f", price)
+}
+
 func main() {
 	go loadConfig()
 
-	http.HandleFunc("/product", func(w http.ResponseWriter, r *http.Request) {
-		price := 50.0
-		fmt.Fprintf(w, "Temos o produto x\n")
-
-		if discount.Load().(string) == "blackfriday" {
-			price = price * 0.7
-		}
-
-		fmt.Fprintf(w, "Preço %0.2f", price)
-	})
+	http.HandleFunc("/", handler)
 	log.Fatal(http.ListenAndServe(":9000", nil))
 }
 
@@ -54,7 +59,11 @@ func loadConfig() {
 
 	discount.Store(string(resp.Kvs[0].Value))
 
-	watcher := cli.Watch(context.Background(), key, clientv3.WithRev(resp.Header.Revision))
+	watcher := cli.Watch(
+		context.Background(),
+		key,
+		clientv3.WithRev(resp.Header.Revision),
+	)
 	for resp := range watcher {
 		for _, ev := range resp.Events {
 			log.Printf("Discount now is %s", ev.Kv.Value)

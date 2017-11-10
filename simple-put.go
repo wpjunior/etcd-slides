@@ -21,11 +21,21 @@ func main() {
 	defer cli.Close()
 
 	value := fmt.Sprintf("my-value-%d", rand.Int())
-	resp, err := cli.Put(context.Background(), "my-key", value)
+	resp, err := cli.Put(
+		context.Background(),
+		"my-key",
+		value,
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Set value of my-key to: %s\n", value)
-	fmt.Printf("The revision created: %d\n", resp.Header.Revision)
+	fmt.Printf(
+		"Set value of my-key to: %s\n",
+		value,
+	)
+	fmt.Printf(
+		"The revision created: %d\n",
+		resp.Header.Revision,
+	)
 }

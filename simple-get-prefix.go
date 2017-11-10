@@ -19,20 +19,21 @@ func main() {
 	}
 	defer cli.Close()
 
-	resp, err := cli.Get(context.Background(), "my", clientv3.WithPrefix())
+	resp, err := cli.Get(
+		context.Background(),
+		"my",
+		clientv3.WithPrefix(),
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if len(resp.Kvs) == 0 {
-		fmt.Println("not found keys is not found")
-		return
-	}
-
-	fmt.Printf("The revision of cluster is: %d\n", resp.Header.Revision)
-
 	for _, kv := range resp.Kvs {
-		fmt.Printf("The value of %s is %s\n", kv.Key, kv.Value)
+		fmt.Printf(
+			"The value of %s is %s\n",
+			kv.Key,
+			kv.Value,
+		)
 	}
 
 }
