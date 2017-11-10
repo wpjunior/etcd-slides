@@ -1,0 +1,2 @@
+run:
+	present -base . -notes
