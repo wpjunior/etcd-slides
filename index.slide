@@ -135,6 +135,8 @@ https://about.me/wpjunior
 
 * Lets code
 
+* github.com/coreos/etcd/clientv3
+
 * Conectando no cluster
 .code simple-get.go /clientv3.New/,/defer/ HLxxx
 
