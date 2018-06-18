@@ -11,62 +11,104 @@ https://about.me/wpjunior
 : Sempre demonstrar grato pelo convite
 : Agradecer a presença de todos
 
-- *Pythonista* desde moleque (=
-- Também é *Gopher*
-- Goiano root's
-- Apaixonado por tecnologia e como ela se apoia nas pessoas
-- Biker
-- Desenvolvedor na Globo.com há 3 anos
+    import "developers.com/brasil/goias/interior"
+
+    // @desenvolvedor na Globo.com há 4 anos
+
+    gopher := "❤"
+    pythonista := true
+    jaTrabalhou := []string{
+       "ecmascript",
+       "ruby",
+       "erlang",
+       "c",
+    }
+
+    // Speed Biker
+    bike.Run() || bike.Climb() || bike.Sprint()
+
+    for {
+       tech.Love() // Apaixonado por tecnologia
+    }
+
+* Obrigado pela oportunidade
+
+
+* Caracteristicas de uma configuração
 
 * Caracteristicas de uma configuração
 
 - Descreve o comportamento
 - Infrequentemente alterada
-- Aplicações modificam seu comportamento
 
 * Imaginemos que possuimos uma aplicação escalada horizontamente 100 vezes em diferentes lugares
 * E cada dessas instancias recebem uma carga de transações muito alta
 
 * Como lidariamos com a consulta e escrita de configurações ?
 
-* Not better approach: variáveis de ambiente
+* Variáveis de ambiente
 .image env-variables.png
 
 * Good to handle
-- Variáveis de ambientes são rápidas e não requerem nenhum I/O externo em tempo de consulta
+- Variáveis de ambiente são rápidas e fáceis de ser compreendidas
+: Variáveis de ambientes são rápidas e não requerem nenhum I/O externo em tempo de consulta
+
+  process.env['MY_VAR'] # Nodejs
+
+  os.environ['MY_VAR'] # Python
+
+  os.Getenv("MY_VAR") # Javascript
+
+  ENV["MY_VAR"] # ruby
 
 * Bad to handle
-- Cordenar 100 restarts para quando houver mudanças
-- a aplicação deve fazer *gracefull* *restart* não sacrificando nenhuma transação em andamento
+- E como eu atualizo essas variáveis de ambientes que estão distribuidas ?
+- Gracefull restart
+- Tempo $$$$
+: Cordenar 100 restarts para quando houver mudanças
+: a aplicação deve fazer *gracefull* *restart* não sacrificando nenhuma transação em andamento
 
-* Not better approach: consultar no banco de dados
+* Consultar no banco de dados
 .image database-query.png
 
 * Good to handle
-- os dados sempre estarão frescos pois foram consultados no momento
-- não preocupar com um componente para manter
+- Freshness
+- Pode ser o mesmo banco de dados da aplicação
+: - os dados sempre estarão frescos pois foram consultados no momento
+: - não preocupar com um componente para manter
 
 * Bad to handle
 - criamos um gargalo.
-- too many: 304 not modified content.
+- too many: "304 not modified content".
 
-* Not better approach: consultar no banco de dados + sistema de cache
+* Consultar no banco de dados + sistema de cache
 .image database-cache.png
 
 * Good to handle
 - o cache garantirá velocidade no acesso.
 
 * Bad to handle
-- Inconsistencia temporal
-- se a aplicação é crítica...
+- Inconsistencia temporal (cache war!)
+- se a aplicação é crítica... estar inconsistente é grave
 
-* Better approach: escolha um banco de dados especializados em configurações
+* Escolha um banco de dados especializados em configurações
 .image database-config.png
+
+* Não é uma ideia tão nova
+
+- Google Chubby (privado)
+- Apache Zookeeper
+- GConf - old GNOME Desktop
+- DConf - new GNOME Desktop
 
 * O que é o etcd
 
-- Criado pela core os
+- /etc *distributed*
 - Utilizado como storage do kubernetes
+
+* O que é o etcd
+
+- Criado pela CoreOS
 - Key/value store
 - Persistente
 - Cluster Tolerante a falhas
@@ -74,7 +116,7 @@ https://about.me/wpjunior
 * O que é o etcd
 - Consistencia e via algoritmo Raft
 - MVCC Multiversion concurrency control
-- 15K stars on github
+- 18K+ stars on github
 - utilizado em outras empresas
 
 * Protocolo debaixo dos panos
@@ -86,9 +128,13 @@ https://about.me/wpjunior
 
 * Raft
 
+.image raft.png
+
+* Raft
+
 - Um algoritmo de *Consensus*
-- Conceito de *Log replicado*
-- Similar ao paxos
+- Conceito de *Log* *replicado*
+- Similar ao Paxos (1989);
 - https://raft.github.io/
 - Necessidade de manter os dados consistentes e tolerante a falhas
 
@@ -105,7 +151,7 @@ https://about.me/wpjunior
 
 * Tradeoff: propagar x consultar
 
-* Somos treinados/viciados em pensar no fluxo só de consultar dados.
+: Somos treinados/viciados em pensar no fluxo só de consultar dados.
 
 * Quando propagar é melhor
 
@@ -132,57 +178,122 @@ https://about.me/wpjunior
 - Conteúdo estruturado
 - Dados de usuários
 
-
-* Lets code
+* Lets code and experiment =)
 
 * github.com/coreos/etcd/clientv3
 
 * Conectando no cluster
 .code simple-get.go /clientv3.New/,/defer/ HLxxx
 
-* Simple GET
+* Preciso ler uma chave terminal
+
+    #!/bin/bash
+    export ETCDCTL_API=3
+    etcdctl get "my-key"
+
+* Preciso ler uma chave
 
 .code simple-get.go /cli.Get/,/^}/ HLxxx
 
-* Simple PUT
+* Como eu escrevo uma chave terminal
+
+    #!/bin/bash
+    export ETCDCTL_API=3
+    etcdctl put "my-key" "my-value"
+
+* Como eu escrevo uma chave
 
 .code simple-put.go /cli.Put/,/^}/ HLxxx
 
-* Simple GET with prefix
+* Como eu leio várias chaves terminal
+
+    #!/bin/bash
+    export ETCDCTL_API=3
+    etcdctl get "my" --prefix
+
+* Como eu leio várias chaves
 
 .code simple-get-prefix.go /cli.Get/,/^}/ HLGet
 
-* Simple Watch
+* Quero escutar a mudança de uma chave terminal
+
+    #!/bin/bash
+    export ETCDCTL_API=3
+    etcdctl watch "my"
+
+* Quero escutar a mudança de uma chave
 
 .code simple-watch.go /cli.Watch/,/^}/ HLxxx
 
-* Simple Watch + Prefix
+* Quero escutar a mudança de várias chaves terminal
+
+    #!/bin/bash
+    export ETCDCTL_API=3
+    etcdctl watch "my" --prefix
+
+* Quero escutar a mudança de várias chaves
 
 .code simple-watch-prefix.go /cli.Watch/,/^}/ HLxxx
 
-* Simple GET + Watch
+* Quero ler uma chave e não perder nenhuma mudança
 
 .code simple-get-watch.go /cli.Get/,/Initial value/ HLxxx
 
-* Simple GET + Watch
+* Quero ler uma chave e não perder nenhuma mudança
 .code simple-get-watch.go /cli.Watch/,/^}/ HLxxx
 
-* Simple App
+* Imaginemos uma App de e-commerce, que possui 300 instancias distribuidas no brasil
+
+* Latency Comparison Numbers (~2012)
+
+.html latency.html
+
+* Exemplo de App
 
 .code simple-app.go /var/,/^}/ HLxxx
 
-* Simple App
+* Exemplo de App
 .code simple-app.go /func loadConfig/,/defer/ HLxxx
 
-* Simple App
+* Exemplo de App
 .code simple-app.go /key/,/Store/ HLxxx
 
-* Simple App
+* Exemplo de App
 .code simple-app.go /cli.Watch/,/^}/ HLxxx
 
-* Simple App
+* Let's run and test and benchmark
 
-- Let's run and test
+* Concurrency tools
+
+- github.com/coreos/etcd/clientv3/concurrency
+
+* Lock distribuído
+
+* Lock distribuído
+
+.code simple-mutex.go /concurrency.NewSession/,/}/ HLxxx
+
+* Lock distribuído
+
+.code simple-mutex.go /concurrency.NewMutex/,/slide/ HLxxx
+
+* Let's run and test
+
+* Eleição de Líderes
+
+* Eleição do gorila da bola azul
+
+.code simple-election.go /concurrency.NewElection/,/Eu sou o gorila/ HLxxx
+
+* Eleição do gorila da bola azul
+
+.code simple-election.go /election.Observe/,/slide/ HLxxx
+
+* Eleição do gorila da bola azul
+
+.code simple-election.go /election.Campaign/,/slide/ HLxxx
+
+* Let's run and test
 
 * Código fonte disponível
 

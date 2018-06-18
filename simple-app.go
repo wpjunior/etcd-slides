@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"sync/atomic"
 	"time"
 
@@ -31,9 +32,14 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	go loadConfig()
-
 	http.HandleFunc("/", handler)
-	log.Fatal(http.ListenAndServe(":9000", nil))
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "9000"
+	}
+
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
 func loadConfig() {
@@ -64,6 +70,7 @@ func loadConfig() {
 		key,
 		clientv3.WithRev(resp.Header.Revision),
 	)
+
 	for resp := range watcher {
 		for _, ev := range resp.Events {
 			log.Printf("Discount now is %s", ev.Kv.Value)

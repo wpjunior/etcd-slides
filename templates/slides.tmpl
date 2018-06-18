@@ -15,7 +15,12 @@
     <script>
       var sections = {{.Sections}};
     </script>
+    <link rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/solarized-dark.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.4.0/languages/go.min.js"></script>
     <script src='/static/notes.js'></script>
+
     {{end}}
 
     <script>
@@ -40,7 +45,7 @@
   <body style='display: none'>
 
     <section class='slides layout-widescreen'>
-      
+
       <article>
         <h1>{{.Title}}</h1>
         {{with .Subtitle}}<h3>{{.}}</h3>{{end}}
@@ -51,7 +56,7 @@
           </div>
         {{end}}
       </article>
-      
+
   {{range $i, $s := .Sections}}
   <!-- start of slide {{$s.Number}} -->
       <article>
@@ -95,6 +100,12 @@
           var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ga, s);
         }
       })();
+    </script>
+    <script>
+       hljs.configure({ languages: ['go', 'bash']})
+       document.querySelectorAll('.code pre').forEach(block => {
+       hljs.highlightBlock(block)
+       });
     </script>
   </body>
 </html>
