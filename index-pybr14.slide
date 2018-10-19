@@ -1,0 +1,206 @@
+Configurações de aplicações distribuidas com etcd
+Tags: go, concorrencia, cloud config
+
+Wilson Júnior
+Desenvolvedor, Globo.com
+wilsonpjunior@gmail.com
+https://about.me/wpjunior
+@wpjunior
+
+* Wilson Júnior
+: Sempre demonstrar grato pelo convite
+: Agradecer a presença de todos
+
+    from brasil.goias.interior import me
+
+    # @desenvolvedor na Globo.com há 4 anos
+
+    gopher = "❤"
+    pythonista = "❤"
+    ja_trabalhou = [
+       "ecmascript",
+       "ruby",
+       "erlang",
+       "c",
+    ]
+
+    # Speed Biker
+    bike.run() and bike.climb() and bike.sprint()
+
+    while True:
+       tech.love() # Apaixonado por tecnologia
+
+
+* Obrigado pela oportunidade
+
+* Caracteristicas de uma configuração
+
+* Caracteristicas de uma configuração
+
+- Descreve o comportamento
+- Infrequentemente alterada
+
+* Exemplo de configurações
+
+- Regras de negócio
+- Dados de sistema: banco de dados
+- Funcionalidades: tempo máximo logado
+
+- settings.py do Django
+
+* Imaginemos que possuimos uma aplicação distribuida em 100 lugares diferentes
+* E cada dessas apps recebem uma carga muito alta
+
+* Como lidariamos com a consulta e escrita de configurações ?
+
+* Variáveis de ambiente
+.image env-variables.png
+
+* Bom de lidar :)
+- Variáveis de ambiente são rápidas e fáceis de ser compreendidas
+: Variáveis de ambientes são rápidas e não requerem nenhum I/O externo em tempo de consulta
+
+  import os
+  os.environ['MY_VAR']
+
+* Ruim de lidar :(
+- E como eu atualizo essas variáveis de ambientes que estão distribuidas ?
+- Reiniciar todas as aplicações
+: Cordenar 100 restarts para quando houver mudanças
+: a aplicação deve fazer *gracefull* *restart* não sacrificando nenhuma transação em andamento
+
+* Consultar no banco de dados
+.image database-query.png
+
+* Bom de lidar :)
+- Dados sempre mais atualizados possíveis
+- Pode ser o mesmo banco de dados da aplicação
+: - os dados sempre estarão frescos pois foram consultados no momento
+: - não preocupar com um componente para manter
+
+* Ruim de lidar :(
+- criamos um gargalo.
+- Consultas com respostas iguais.
+
+* Escolha um banco de dados especializados em configurações
+.image database-config.png
+
+* O que é o etcd
+
+- /etc *distributed*
+- Utilizado como storage do kubernetes
+
+* O que é o etcd
+
+- Criado pela CoreOS
+- Dados como Chave / Valor
+- Persistente
+- Cluster Tolerante a falhas
+
+* O que é o etcd
+- Consistencia e via algoritmo Raft
+- utilizado em outras empresas
+
+* Raft
+
+.image raft.png
+
+* Raft
+
+- Um algoritmo de *Consensus*
+- Conceito de *Log* *replicado*
+- Similar ao Paxos (1989);
+- https://raft.github.io/
+- Necessidade de manter os dados consistentes e tolerante a falhas
+
+* Tamanho do cluster
+.html cluster-size.html
+
+* Replicated log
+
+* Exemplo
+
+.image replicated-log.png
+
+* Transações lineares
+
+* Entre propagar ou consultar
+
+: Somos treinados/viciados em pensar no fluxo só de consultar dados.
+
+* Quando propagar é melhor
+
+* Quando propagar é melhor
+
+- os dados não são frequentemente alterados
+- os dados não possuem um grande volume
+- preciso da menor tempo de resposta possível
+
+* Exemplos
+
+- Configurações de rede
+- Configurações de funcionalidades
+- Configurações de negócio
+
+* Quando consultar é melhor
+
+* Quando consultar é melhor
+
+- os dados são frequentemente alterados
+- os dados possuem um grande volume
+- preciso da menor tempo de resposta possível
+
+* Exemplos
+
+- Conteúdo
+- Dados produzidos por usuários finais (grande massa de dados)
+
+* Vamos experimentar =)
+
+* Vamos começar pelo terminal
+
+    #!/bin/bash
+    export ETCDCTL_API=3
+    etcdctl put "my-key" "my-value"
+    etcdctl get "my-key"
+    etcdctl get "my" --prefix
+    etcdctl watch "my"
+    etcdctl watch "my" --prefix
+
+* Vamos brincar no ipython
+
+
+* Latency Comparison Numbers (~2012)
+
+.html latency.html
+
+* Imaginemos uma App de e-commerce, que possui 300 apps distribuidas no brasil
+
+* Exemplo de App
+
+.code simple-app.go /var/,/^}/ HLxxx
+
+* Exemplo de App
+.code simple-app.go /func loadConfig/,/defer/ HLxxx
+
+* Exemplo de App
+.code simple-app.go /key/,/Store/ HLxxx
+
+* Exemplo de App
+.code simple-app.go /cli.Watch/,/^}/ HLxxx
+
+* Let's run and test and benchmark
+
+* Código fonte disponível
+
+- github.com/wpjunior/etcd-slides
+
+* Outros projetos semelhantes
+
+- Consul
+- Serf
+- Zookeeper
+
+* Estamos contratando
+
+- talentos.globo.com
